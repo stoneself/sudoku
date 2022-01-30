@@ -135,6 +135,8 @@ class Solver(Grid):
     # use info against other Squares
     # if number only occurs in corresponding row/column of another Square,
     # remove number from third Square
+    # test blame
+
     def Rows2of3(grid, x, y):
         return
 
