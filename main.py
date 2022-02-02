@@ -7,17 +7,28 @@
 import inspect
 import math
 
+class Cell:
+    def print(self):
+        #return list of the three parts
+
+    def isLegal(self):
+        # if there is at least 1 number in the cell list
+
+    def set(self, value):
+        # check value-1 is not x
+        # set all other member to x
+
+    def remove(self, value):
+        # check that this is not the last value
+        # set value-1 to x
+
+    def remainingClues(self):
+        # return set conversion of cell
+
+    def __init__(self):
+        self.cell = [1, 2, 3, 4, 5, 6, 7, 8 ,9]
 
 class Square:
-    # zero indexing
-    # TODO: should check input?
-    def selectSquareInGrid(self, grid, x, y):
-        # y is rows
-        for i in range(0 + (y*3), 3 + (y*3)):
-            # x is cols
-            for j in range(0 + (x*3), 3 + (x*3)):
-                self.square.append(grid[i * 9 + j])
-
     def print(self):
         for i in range(0, 3):
             for j in range(0, 3):
@@ -25,49 +36,60 @@ class Square:
             print()
 
     def __init__(self, grid, x, y):
-        self.square = []
-        self.selectSquareInGrid(grid, x, y)
-
+        self.square = grid.XYSquare(x, y)
 
 class Row:
-    # TODO: i feel bad about using row twice
-    def selectRowInGrid(self, grid, row):
-        for j in range(0, 9):
-            self.row.append(grid[row * 9 + j])
-
     def print(self):
         for j in range(0, 9):
             print(self.row[j])
 
-    def __init__(self, grid, row):
-        self.row = []
-        self.selectRowInGrid(grid, row)
+    def __init__(self, grid, N):
+        self.row = grid.NthRow(N)
         return
 
-
 class Col:
-    # TODO: i feel bad about using col twice
-    def selectColInGrid(self, grid, col):
-        for i in range(0, 9):
-            self.col.append(grid[i * 9 + col])
-
     def print(self):
         for j in range(0, 9):
             print(self.col[j])
 
-    def __init__(self, grid, col):
-        self.col = []
-        self.selectColInGrid(grid, col)
-        return
+    def __init__(self, grid, N):
+        self.col = grid.NthCol(N)
 
 class Grid:
     def createUnsolvedGrid(self):
         # zero INDEXing, but using 1, 9
         self.grid = [list(range(1, 10)) for i in range(0, 9) for j in range(0, 9)]
 
-    def setCell(self, x, y, numList):
-        self.grid[x * 9 + y] = numList
+    def setCell(self, x, y, num):
+        self.grid[x * 9 + y]=["x"]*9
+        self.grid[x * 9 + y][num-1]=num
         return
+
+    def NthCol(self, N):
+        col = []
+        for i in range(0, 9):
+            col.append(self.grid[i * 9 + N])
+        return col
+
+    def NthRow(self, N):
+        row = []
+        for j in range(0, 9):
+            row.append(self.grid[N * 9 + j])
+        return row
+
+    def NthSquare(self, N):
+        return
+
+    # zero indexing
+    # TODO: should check input?
+    def XYSquare(self, x, y):
+        square = []
+        # y is rows
+        for i in range(0 + (y * 3), 3 + (y * 3)):
+            # x is cols
+            for j in range(0 + (x * 3), 3 + (x * 3)):
+                square.append(self.grid[i * 9 + j])
+        return square
 
     # xero indexing
     def print(self):
@@ -197,7 +219,7 @@ def getFuncName():
 
 def testCase0001():
     print(getFuncName())
-    obsolete = False
+    obsolete = True
     if obsolete == True:
         print(getFuncName(), "is obsolete")
         return
@@ -217,17 +239,13 @@ def testCase0001():
 
 def testCase0002():
     print(getFuncName())
-    obsolete = False
+    obsolete = True
     if obsolete == True:
         print(getFuncName(), "is obsolete")
         return
 
     testGrid = Grid()
 
-    '''
-    for i in range(0, 81):
-        testGrid.setCell(i//9, i%9, [i])
-    '''
     testGrid.print()
 
     testSquare = Square(testGrid.grid, 0, 1)
@@ -239,10 +257,59 @@ def testCase0002():
     testCol = Col(testGrid.grid, 1)
     testCol.print()
 
+def testCase0003():
+    print(getFuncName())
+    obsolete = True
+    if obsolete == True:
+        print(getFuncName(), "is obsolete")
+        return
+
+    testGrid = Grid()
+
+    for x in range(9):
+        for y in range(9):
+            testGrid.setCell(x,y, x*y%9+1)
+
+    testGrid.print()
+
+def testCase0004():
+    print(getFuncName())
+    obsolete = False
+    if obsolete == True:
+        print(getFuncName(), "is obsolete")
+        return
+
+    testGrid = Grid()
+    testGrid.print()
+
+    testRow = Row(testGrid, 0)
+    testRow.print()
+
+    testCol = Col(testGrid, 1)
+    testCol.print()
+
+    testSquare = Square(testGrid, 1, 1)
+    testSquare.print()
+
+    for x in range(9):
+        for y in range(9):
+            testGrid.setCell(x,y, x*y%9+1)
+
+    testGrid.print()
+
+    testRow = Row(testGrid, 0)
+    testRow.print()
+
+    testCol = Col(testGrid, 1)
+    testCol.print()
+
+    testSquare = Square(testGrid, 1, 1)
+    testSquare.print()
+
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    testCase0002()
+    testCase0004()
 
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
