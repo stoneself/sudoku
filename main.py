@@ -8,22 +8,36 @@ import inspect
 import math
 
 class Cell:
-    def print(self):
-        #return list of the three parts
+    def printSegments(self):
+        part1 = [str(self.cell[0]) + str(self.cell[1]) + str(self.cell[2])]
+        part2 = [str(self.cell[3]) + str(self.cell[4]) + str(self.cell[5])]
+        part3 = [str(self.cell[6]) + str(self.cell[7]) + str(self.cell[8])]
+        return [part1, part2, part3]
 
     def isLegal(self):
-        # if there is at least 1 number in the cell list
+        for i in self.cell:
+            if i != "x":
+                return True
+        return False
 
-    def set(self, value):
-        # check value-1 is not x
-        # set all other member to x
+    def getClues(self, value):
+        return self.cell[value-1]
 
-    def remove(self, value):
-        # check that this is not the last value
-        # set value-1 to x
+    def setSolution(self, value):
+        # IGNORE: check self.cell[value-1] is not "x"
+        self.cell=["x"]*9
+        self.cell[value-1]= value
+
+    def markClue(self, value):
+        self.cell[value-1]= value
+
+    def unmarkClue(self, value):
+        # check that this is not the last non-"x" value
+        self.cell[value-1]=x
 
     def remainingClues(self):
         # return set conversion of cell
+        return set(self.cell)
 
     def __init__(self):
         self.cell = [1, 2, 3, 4, 5, 6, 7, 8 ,9]
@@ -102,21 +116,21 @@ class Grid:
                 # plain list of contents
                 # print(self.grid[i * 9 + j], end=" ")
                 for t in range(3):
-                    row1 = row1 + " " + str(self.grid[i * 9 + j][t]) + " "
-                    row2 = row2 + " " + str(self.grid[i * 9 + j][t+3]) + " "
-                    row3 = row3 + " " + str(self.grid[i * 9 + j][t+6]) + " "
+                    row1 = row1 + str(self.grid[i * 9 + j][t])
+                    row2 = row2 + str(self.grid[i * 9 + j][t+3])
+                    row3 = row3 + str(self.grid[i * 9 + j][t+6])
                     if t == 2:
                         row1 = row1 + " "
                         row2 = row2 + " "
                         row3 = row3 + " "
                 if (j % 3) == 2:
-                    row1 = row1 + " "
-                    row2 = row2 + " "
-                    row3 = row3 + " "
+                    row1 = row1 + "  "
+                    row2 = row2 + "  "
+                    row3 = row3 + "  "
             print(row1)
             print(row2)
             print(row3)
-            # print()
+            print()
             if (i % 3) == 2:
                 print()
 
@@ -306,10 +320,36 @@ def testCase0004():
     testSquare = Square(testGrid, 1, 1)
     testSquare.print()
 
+def testCase0005():
+    print(getFuncName())
+    obsolete = False
+    if obsolete == True:
+        print(getFuncName(), "is obsolete")
+        return
+
+    testGrid = Grid()
+    testRow = Row(testGrid, 0)
+    testCol = Col(testGrid, 1)
+    testSquare = Square(testGrid, 1, 1)
+
+    for x in range(9):
+        for y in range(9):
+            testGrid.setCell(x,y, x*y%9+1)
+
+    testGrid.print()
+    '''
+    print()
+    testRow.print()
+    print()
+    testCol.print()
+    print()
+    testSquare.print()
+    print()
+    '''
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    testCase0004()
+    testCase0005()
 
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
