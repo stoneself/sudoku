@@ -8,45 +8,56 @@ import inspect
 import math
 
 class Cell:
-    def printSegments(self):
-        part1 = [str(self.cell[0]) + str(self.cell[1]) + str(self.cell[2])]
-        part2 = [str(self.cell[3]) + str(self.cell[4]) + str(self.cell[5])]
-        part3 = [str(self.cell[6]) + str(self.cell[7]) + str(self.cell[8])]
+    def printableSegments(self):
+        part1 = str(self.clues[0]) + str(self.clues[1]) + str(self.clues[2])
+        part2 = str(self.clues[3]) + str(self.clues[4]) + str(self.clues[5])
+        part3 = str(self.clues[6]) + str(self.clues[7]) + str(self.clues[8])
         return [part1, part2, part3]
 
     def isLegal(self):
-        for i in self.cell:
+        # if not all "x"s then Legal
+        for i in self.clues:
             if i != "x":
                 return True
         return False
 
     def getClues(self, value):
-        return self.cell[value-1]
+        return self.clues[value - 1]
 
     def setSolution(self, value):
         # IGNORE: check self.cell[value-1] is not "x"
-        self.cell=["x"]*9
-        self.cell[value-1]= value
+        self.clues= ["x"] * 9
+        self.clues[value - 1]= value
 
     def markClue(self, value):
-        self.cell[value-1]= value
+        self.clues[value - 1]= value
 
     def unmarkClue(self, value):
         # check that this is not the last non-"x" value
-        self.cell[value-1]=x
+        self.clues[value - 1]=x
 
     def remainingClues(self):
         # return set conversion of cell
-        return set(self.cell)
+        return set(self.clues)
 
-    def __init__(self):
-        self.cell = [1, 2, 3, 4, 5, 6, 7, 8 ,9]
+    def __init__(self, index):
+        self.index = index
+        self.clues = [1, 2, 3, 4, 5, 6, 7, 8 , 9]
 
 class Square:
     def print(self):
         for i in range(0, 3):
+            row1 = ""
+            row2 = ""
+            row3 = ""
             for j in range(0, 3):
-                print(self.square[i * 3 + j], end=" ")
+                temp = self.square[i * 3 + j].printableSegments()
+                row1 = row1 + temp[0] + " "
+                row2 = row2 + temp[1] + " "
+                row3 = row3 + temp[2] + " "
+            print(row1)
+            print(row2)
+            print(row3)
             print()
 
     def __init__(self, grid, x, y):
@@ -54,8 +65,17 @@ class Square:
 
 class Row:
     def print(self):
+        row1 = ""
+        row2 = ""
+        row3 = ""
         for j in range(0, 9):
-            print(self.row[j])
+            temp = self.row[j].printableSegments()
+            row1 = row1 + temp[0] + " "
+            row2 = row2 + temp[1] + " "
+            row3 = row3 + temp[2] + " "
+        print(row1)
+        print(row2)
+        print(row3)
 
     def __init__(self, grid, N):
         self.row = grid.NthRow(N)
@@ -64,7 +84,11 @@ class Row:
 class Col:
     def print(self):
         for j in range(0, 9):
-            print(self.col[j])
+            temp = self.col[j].printableSegments()
+            print(temp[0])
+            print(temp[1])
+            print(temp[2])
+            print()
 
     def __init__(self, grid, N):
         self.col = grid.NthCol(N)
@@ -72,9 +96,11 @@ class Col:
 class Grid:
     def createUnsolvedGrid(self):
         # zero INDEXing, but using 1, 9
-        self.grid = [list(range(1, 10)) for i in range(0, 9) for j in range(0, 9)]
+        self.grid = []
+        for i in range(81):
+            self.grid.append(Cell(i))
 
-    def setCell(self, x, y, num):
+    def markCell(self, x, y, num):
         self.grid[x * 9 + y]=["x"]*9
         self.grid[x * 9 + y][num-1]=num
         return
@@ -113,16 +139,10 @@ class Grid:
             row3 = ""
             for j in range(0, 9):
                 # TODO: construct the strings to print for the 3x3 set of values in a cell instead of printing
-                # plain list of contents
-                # print(self.grid[i * 9 + j], end=" ")
-                for t in range(3):
-                    row1 = row1 + str(self.grid[i * 9 + j][t])
-                    row2 = row2 + str(self.grid[i * 9 + j][t+3])
-                    row3 = row3 + str(self.grid[i * 9 + j][t+6])
-                    if t == 2:
-                        row1 = row1 + " "
-                        row2 = row2 + " "
-                        row3 = row3 + " "
+                temp  = self.grid[i * 9 + j].printableSegments()
+                row1 = row1 + temp[0] + " "
+                row2 = row2 + temp[1] + " "
+                row3 = row3 + temp[2] + " "
                 if (j % 3) == 2:
                     row1 = row1 + "  "
                     row2 = row2 + "  "
@@ -282,7 +302,7 @@ def testCase0003():
 
     for x in range(9):
         for y in range(9):
-            testGrid.setCell(x,y, x*y%9+1)
+            testGrid.markCell(x, y, x * y % 9 + 1)
 
     testGrid.print()
 
@@ -307,7 +327,7 @@ def testCase0004():
 
     for x in range(9):
         for y in range(9):
-            testGrid.setCell(x,y, x*y%9+1)
+            testGrid.markCell(x, y, x * y % 9 + 1)
 
     testGrid.print()
 
@@ -328,16 +348,17 @@ def testCase0005():
         return
 
     testGrid = Grid()
+    testGrid.print()
+
     testRow = Row(testGrid, 0)
     testCol = Col(testGrid, 1)
     testSquare = Square(testGrid, 1, 1)
 
-    for x in range(9):
-        for y in range(9):
-            testGrid.setCell(x,y, x*y%9+1)
+    for i in range(81):
+        testGrid.grid[i].setSolution((((i) + (i % 11)) % 9) + 1)
 
     testGrid.print()
-    '''
+
     print()
     testRow.print()
     print()
@@ -345,7 +366,6 @@ def testCase0005():
     print()
     testSquare.print()
     print()
-    '''
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
