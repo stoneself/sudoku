@@ -42,10 +42,14 @@ class Cell:
 
     def __init__(self, index):
         self.index = index
+        self.x = index // 9
+        self.y = index % 9
+        self.squareX = self.x // 3
+        self.squareY = self.y // 3
         self.clues = [1, 2, 3, 4, 5, 6, 7, 8 , 9]
 
 class Square:
-    def print(self):
+    def display(self):
         for i in range(0, 3):
             row1 = ""
             row2 = ""
@@ -64,7 +68,7 @@ class Square:
         self.square = grid.XYSquare(x, y)
 
 class Row:
-    def print(self):
+    def display(self):
         row1 = ""
         row2 = ""
         row3 = ""
@@ -82,7 +86,7 @@ class Row:
         return
 
 class Col:
-    def print(self):
+    def display(self):
         for j in range(0, 9):
             temp = self.col[j].printableSegments()
             print(temp[0])
@@ -132,25 +136,31 @@ class Grid:
         return square
 
     # xero indexing
-    def print(self):
+    def display(self):
         for i in range(0, 9):
+            row0 = ""
             row1 = ""
             row2 = ""
             row3 = ""
             for j in range(0, 9):
                 # TODO: construct the strings to print for the 3x3 set of values in a cell instead of printing
-                temp  = self.grid[i * 9 + j].printableSegments()
+                temp = self.grid[i * 9 + j].printableSegments()
+                tempStr = str(self.grid[i * 9 + j].index)
+                if len(tempStr) == 1:
+                    tempStr = "0" + tempStr
+                row0 = row0 + tempStr + str(self.grid[i * 9 + j].x) + str(self.grid[i * 9 + j].y)
                 row1 = row1 + temp[0] + " "
                 row2 = row2 + temp[1] + " "
                 row3 = row3 + temp[2] + " "
                 if (j % 3) == 2:
-                    row1 = row1 + "  "
-                    row2 = row2 + "  "
-                    row3 = row3 + "  "
+                    row0 = row0 + " "
+                    row1 = row1 + " "
+                    row2 = row2 + " "
+                    row3 = row3 + " "
+            print(row0)
             print(row1)
             print(row2)
             print(row3)
-            print()
             if (i % 3) == 2:
                 print()
 
@@ -280,16 +290,16 @@ def testCase0002():
 
     testGrid = Grid()
 
-    testGrid.print()
+    testGrid.display()
 
     testSquare = Square(testGrid.grid, 0, 1)
-    testSquare.print()
+    testSquare.display()
 
     testRow = Row(testGrid.grid, 0)
-    testRow.print()
+    testRow.display()
 
     testCol = Col(testGrid.grid, 1)
-    testCol.print()
+    testCol.display()
 
 def testCase0003():
     print(getFuncName())
@@ -304,7 +314,7 @@ def testCase0003():
         for y in range(9):
             testGrid.markCell(x, y, x * y % 9 + 1)
 
-    testGrid.print()
+    testGrid.display()
 
 def testCase0004():
     print(getFuncName())
@@ -314,31 +324,31 @@ def testCase0004():
         return
 
     testGrid = Grid()
-    testGrid.print()
+    testGrid.display()
 
     testRow = Row(testGrid, 0)
-    testRow.print()
+    testRow.display()
 
     testCol = Col(testGrid, 1)
-    testCol.print()
+    testCol.display()
 
     testSquare = Square(testGrid, 1, 1)
-    testSquare.print()
+    testSquare.display()
 
     for x in range(9):
         for y in range(9):
             testGrid.markCell(x, y, x * y % 9 + 1)
 
-    testGrid.print()
+    testGrid.display()
 
     testRow = Row(testGrid, 0)
-    testRow.print()
+    testRow.display()
 
     testCol = Col(testGrid, 1)
-    testCol.print()
+    testCol.display()
 
     testSquare = Square(testGrid, 1, 1)
-    testSquare.print()
+    testSquare.display()
 
 def testCase0005():
     print(getFuncName())
@@ -348,7 +358,7 @@ def testCase0005():
         return
 
     testGrid = Grid()
-    testGrid.print()
+    testGrid.display()
 
     testRow = Row(testGrid, 0)
     testCol = Col(testGrid, 1)
@@ -357,14 +367,14 @@ def testCase0005():
     for i in range(81):
         testGrid.grid[i].setSolution((((i) + (i % 11)) % 9) + 1)
 
-    testGrid.print()
+    testGrid.display()
 
     print()
-    testRow.print()
+    testRow.display()
     print()
-    testCol.print()
+    testCol.display()
     print()
-    testSquare.print()
+    testSquare.display()
     print()
 
 # Press the green button in the gutter to run the script.
